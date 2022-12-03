@@ -1,0 +1,13 @@
+:Base damfr.hlp
+:Title Dam Aide
+:Index=damfr.hlp
+1 Sommaire=TPC_contents
+1 Sujets
+2 Généralités=TPC_general
+2 Règles du jeu=TPC_rules
+2 Menus=TPC_menuselection
+2 Comment saisir un mouvement=TPC_makemove
+2 Comment entrer une position=TPC_setup
+2 Formats de fichiers=TPC_filetypes
+2 Bases de fin de parties=TPC_database
+2 DamExchange=TPC_damexchange

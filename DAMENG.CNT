@@ -1,0 +1,13 @@
+:Base dameng.hlp
+:Title Dam Help
+:Index=dameng.hlp
+1 Contents=TPC_contents
+1 Topics
+2 General=TPC_general
+2 Rules of the game=TPC_rules
+2 Menu selection=TPC_menuselection
+2 How to make a move=TPC_makemove
+2 How to set up a position=TPC_setup
+2 File types=TPC_filetypes
+2 End game databases=TPC_database
+2 DamExchange=TPC_damexchange

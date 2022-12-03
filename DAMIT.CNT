@@ -1,0 +1,13 @@
+:Base damit.hlp
+:Title Guida di Dam
+:Index=damit.hlp
+1 Sommario=TPC_contents
+1 Indice degli argomenti
+2 Introduzione=TPC_general
+2 Regole del gioco=TPC_rules
+2 Menu=TPC_menuselection
+2 Come muovere un pezzo=TPC_makemove
+2 Come definire una posizione=TPC_setup
+2 Formato dei file=TPC_filetypes
+2 Base di dati dei finali=TPC_database
+2 DamExchange=TPC_damexchange

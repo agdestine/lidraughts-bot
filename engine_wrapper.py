@@ -244,8 +244,10 @@ class HubEngine(EngineWrapper):
         if "bb-size" in options and options["bb-size"] == "auto":
             if "variant" in options and options["variant"] != "normal":
                 variant = f'_{options["variant"]}'
+                print("--- HERE in VARIANT diff NORMAL---")
             else:
                 variant = ""
+                print("--- HERE in VARIANT is EMPTY---")
             for number in range(1, 7):
                 path = os.path.realpath(f"./data/bb{variant}/{number + 1}")
                 if not os.path.isdir(path):
@@ -255,6 +257,7 @@ class HubEngine(EngineWrapper):
             if number == 1:
                 number = 0
             options["bb-size"] = number
+            print("---- BB-SIZE ="+str(number))
 
         self.engine.configure(options)
         self.engine.init()
@@ -280,10 +283,12 @@ class DXPEngine(EngineWrapper):
         self.engine = draughts.engine.DXPEngine(commands, options=options, **popen_args)
 
     def search(self, board, time_limit, ponder, draw_offered):
+        print("HERE in search wint time_limit="+ str(time_limit.time))
         if ponder:
             return draughts.engine.PlayResult(None, None)
         time_limit = self.add_go_commands(time_limit)
         result = self.engine.play(board)
+        print("RESULT="+result)
         return self.process_playresult(board, result)
 
     def quit(self):

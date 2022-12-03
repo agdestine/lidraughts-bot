@@ -1,0 +1,13 @@
+:Base damnl.hlp
+:Title Dam Help
+:Index=damnl.hlp
+1 Inhoud=TPC_contents
+1 Onderwerpen
+2 Algemeen=TPC_general
+2 Spelregels=TPC_rules
+2 Menu selectie=TPC_menuselection
+2 Uitvoeren van een zet=TPC_makemove
+2 Stelling opzetten=TPC_setup
+2 Bestandstypen=TPC_filetypes
+2 Eindspel databases=TPC_database
+2 DamExchange=TPC_damexchange

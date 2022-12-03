@@ -21,9 +21,10 @@ engine:                      # Engine settings.
   homemade_options:
 #   Hash: 256
   hub_options:               # Arbitrary Hub options passed to the engine.
-    book-ply: 20
-    tt-size: 23
-    bb-size: 'auto'          # 'auto' changes bb depending on the variant
+    book-ply: 4
+    book-margin: 0
+    tt-size: 24
+    bb-size: 6               # 'auto' changes bb depending on the variant
 #   go_commands:             # Additional options to pass to the Hub go command.
 #     nodes: 1               # Search so many nodes only.
 #     depth: 5               # Search depth ply only.
@@ -47,14 +48,15 @@ correspondence:
   ponder: false            # Ponder in correspondence games the bot is connected to.
 
 challenge:                   # Incoming challenges.
-  concurrency: 4             # Number of games to play simultaneously.
-  sort_by: "first"            # Possible values: "best" and "first".
+  concurrency: 2             # Number of games to play simultaneously.
+  sort_by: "best"            # Possible values: "best" and "first".
   accept_bot: false          # Accepts challenges coming from other bots.
   only_bot: false            # Accept challenges by bots only.
   max_increment: 180         # Maximum amount of increment to accept a challenge. The max is 180. Set to 0 for no increment.
   min_increment: 0           # Minimum amount of increment to accept a challenge.
   max_base: 315360000        # Maximum amount of base time to accept a challenge. The max is 315360000 (10 years).
   min_base: 0                # Minimum amount of base time to accept a challenge.
+#  variants:                  # Draughts variants to accept (https://lidraughts.org/variant).
   variants:                  # Draughts variants to accept (https://lidraughts.org/variant).
     - standard
 #   - fromPosition
@@ -80,9 +82,9 @@ greeting:
   #   {opponent} to insert opponent's name
   #   {me} to insert bot's name
   # Any other words in curly braces will be removed.
-  hello: "Hi! I'm {me}. Good luck! Type !help for a list of commands I can respond to." # Message to send to opponent chat at the start of a game
-  goodbye: "Good game!" # Message to send to opponent chat at the end of a game
-  hello_spectators: "Hi! I'm {me}. Type !help for a list of commands I can respond to." # Message to send to spectator chat at the start of a game
-  goodbye_spectators: "Thanks for watching!" # Message to send to spectator chat at the end of a game
+  hello: "Bonjou! Mwen rele {me}. Bon chans!" # Message to send to opponent chat at the start of a game
+  goodbye: "Mesi. Se te yon bel pati!" # Message to send to opponent chat at the end of a game
+  hello_spectators: "Bonjou! Mwen rele {me}. Ann swete {opponent} bon chans." # Message to send to spectator chat at the start of a game
+  goodbye_spectators: "Mesi deske nou tap gade. {opponent} jwe yon bel pati! " # Message to send to spectator chat at the end of a game
 
 # pgn_directory: "game_records" # A directory where PDN-format records of the bot's games are kept

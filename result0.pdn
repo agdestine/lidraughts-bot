@@ -1,0 +1,47 @@
+
+[Site "DESKTOP-C1VOLQD"]
+[Date "2022.11.14"]
+[Time "09:47:09"]
+[Round "1"]
+[White "Dam"]
+[Black "Moby Dam (May 17 2019)"]
+[Result "*"]
+[TimeControl "65/60"]
+[WhiteTime "0:00:04"]
+[BlackTime "0:00:05"]
+[GameType "20"]
+[Event "?"]
+
+1. 32-28 18-23 
+2. 33-29 23x32 
+3. 37x28 20-24 
+4. 29x20 15x24 
+5. 39-33 10-15 
+6. 41-37 17-22 
+7. 28x17 11x22 
+*
+
+
+[Site "DESKTOP-C1VOLQD"]
+[Date "2022.11.14"]
+[Time "09:55:14"]
+[Round "2"]
+[White "Moby Dam (May 17 2019)"]
+[Black "Dam"]
+[Result "*"]
+[TimeControl "65/60"]
+[WhiteTime "0:00:06"]
+[BlackTime "0:00:19"]
+[GameType "20"]
+[Event "?"]
+
+1. 32-28 18-23 
+2. 33-29 23x32 
+3. 37x28 17-21 
+4. 39-33 21-26 
+5. 44-39 26x37 
+6. 41x32 12-18 
+7. 29-23 18x29 
+8. 34x23 
+*
+

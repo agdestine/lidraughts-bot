@@ -1,0 +1,13 @@
+:Base damrus.hlp
+:Title Dam Помощь
+:Index=damrus.hlp
+1 Содержание=TPC_contents
+1 Subjects
+2 Общие положения=TPC_general
+2 Правила игры=TPC_rules
+2 Описание меню программы=TPC_menuselection
+2 Как сделать ход=TPC_makemove
+2 Как установить позицию=TPC_setup
+2 Типы файлов=TPC_filetypes
+2 База данных конечных позиций=TPC_database
+2 DamExchange - игра по сети=TPC_damexchange

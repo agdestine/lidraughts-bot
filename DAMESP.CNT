@@ -1,0 +1,13 @@
+:Base damesp.hlp
+:Title Ayuda de Dam
+:Index =damesp.hlp
+1 Contenido=TPC_contents
+1 Temas
+2 General=TPC_general
+2 Reglas del Juego=TPC_rules
+2 Comandos del menú=TPC_menuselection
+2 Como hacer un movimiento=TPC_makemove
+2 Como introducir una posición=TPC_setup
+2 Tipos de archivos=TPC_filetypes
+2 Bases de datos para las finales=TPC_database
+2 DamExchange=TPC_damexchange

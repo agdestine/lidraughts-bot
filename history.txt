@@ -1,0 +1,20 @@
+Moby Dam History
+
+
+2015-07-05 initial release, 18th Computer Olympiad version.
+Open Source (GPL v3.0).
+Compiles and runs on Linux and Windows 64-bit systems.
+The processor must support the POPCNT instruction.
+Single-threaded (no multi-core parallel search yet).
+Uses the 2-6 piece endgame databases.
+
+2016-07-03 second release, 19th Computer Olympiad version.
+Support Visual Studio 2015.
+Added DXP BACKREQ (take back move) support.
+Fixed opponent's move count in the log.
+Increased strength of play by adding bad move pruning a la Scan.
+
+2019-05-19 third release, open Dutch championship computer draughts 2019.
+Made move generator faster when compiled with Visual Studio.
+Fixed killer moves by converting from position-based to from-to pair.
+Cleaned up function that writes PDN to file.
