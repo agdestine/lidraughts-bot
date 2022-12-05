@@ -85,8 +85,7 @@ def logging_configurer(level, filename):
         all_handlers.append(file_handler)
 
     logging.basicConfig(level=level,
-                        handlers=all_handlers,
-                        force=True)
+                        handlers=all_handlers)
 
 
 def logging_listener_proc(queue, configurer, level, log_filename):
