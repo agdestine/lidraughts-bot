@@ -1,3 +1,5 @@
 #import os
 
-#os.system("python3 lichess-bot.py -u")
+os.system("python3 lidraughts-bot.py -u")
+
+
