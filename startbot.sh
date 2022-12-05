@@ -3,3 +3,4 @@
 which python
 which python3
 python3 lidraughts-bot.py -u
+
