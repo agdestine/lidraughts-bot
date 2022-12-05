@@ -20,11 +20,11 @@ RUN echo OIVAS7572 | sudo -S apt-get install -y wget
 RUN echo OIVAS7572 | sudo -S apt-get install -y python3 python3-pip
 RUN echo OIVAS7572 | sudo -S apt install python3-pip -y
 COPY requirements.txt .
-RUN echo OIVAS7572 | sudo -S python3 -m pip install --no-cache-dir -r requirements.txt
+RUN echo OIVAS7572 | sudo -S /usr/bin/python3 -m pip install --no-cache-dir -r requirements.txt
 
 RUN echo OIVAS7572 | sudo -S chmod +x scan_linux
 #                   Engine is here    ^^^^^^^^^^^^^^^
 #RUN echo OIVAS7572 | sudo -S apt-get install -y libopenblas-dev
 #If you want to use Lc0 uncomment 29th line (Remove Hash at start of 29th line)
 
-CMD python3 run.py
+#CMD /usr/bin/python3 run.py
