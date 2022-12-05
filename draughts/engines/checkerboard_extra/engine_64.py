@@ -1,10 +1,16 @@
 import ctypes
-from ctypes import wintypes
 import os
 import draughts
 from draughts.engines.checkerboard_extra.get_checker_board import get_board, from_board
 from typing import Optional, Union, Tuple, Dict, Any
 
+import ctypes
+
+try:
+  import ctypes.wintypes
+except ImportError, ValueError:
+  # catch ImportError and ValueError due to issue16396
+  pass
 
 class Engine64:
     def __init__(self, command: str) -> None:
