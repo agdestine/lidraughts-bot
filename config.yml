@@ -24,7 +24,7 @@ engine:                      # Engine settings.
     book-ply: 4
     book-margin: 0
     tt-size: 24
-    bb-size: 6               # 'auto' changes bb depending on the variant
+    bb-size: 5               # 'auto' changes bb depending on the variant
 #   go_commands:             # Additional options to pass to the Hub go command.
 #     nodes: 1               # Search so many nodes only.
 #     depth: 5               # Search depth ply only.
