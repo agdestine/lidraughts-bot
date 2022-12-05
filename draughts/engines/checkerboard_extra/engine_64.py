@@ -4,14 +4,6 @@ import draughts
 from draughts.engines.checkerboard_extra.get_checker_board import get_board, from_board
 from typing import Optional, Union, Tuple, Dict, Any
 
-import ctypes
-
-try:
-  import ctypes.wintypes
-except ImportError, ValueError:
-  # catch ImportError and ValueError due to issue16396
-  pass
-
 class Engine64:
     def __init__(self, command: str) -> None:
         os.add_dll_directory(os.path.realpath(os.path.expanduser(os.path.dirname(command))))
@@ -20,13 +12,7 @@ class Engine64:
     def kill_process(self) -> None:
         """Kill the engine process."""
         handle = self.engine._handle
-        try:
-            # Windows
-            ctypes.windll.kernel32.FreeLibrary.argtypes = [wintypes.HMODULE]
-            ctypes.windll.kernel32.FreeLibrary(handle)
-        except Exception:
-            # Unix
-            self.engine.dlcose(handle)
+        self.engine.dlcose(handle)
 
     def enginecommand(self, command: str) -> Tuple[bytes, int]:
         """Send an enginecommand to the engine."""
