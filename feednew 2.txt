@@ -1,0 +1,16 @@
+-> Proof that this algorithm is correct: 3/3
+Feedback : Excellent ! Consider explaining that the property hold also at the termination (at the end of the loop).
+
+-> Linear-time algorithm for this task: 2/2
+Feedback : Perfect !!!
+
+-> Justification for its correctness: 2/2
+Feedback : Perfect !!!
+
+-> Overall time in terms of |E|? 2.5/3
+Feedback : Good work. But you omit to express the time in terms on |E| as specified in the question.
+
+OVERALL FEEDBACK:
+Excellent and legible work !!!
+
+Feedback : Good ! But, not clear what algorithm will be used to detect the existence of cycle given an edge.
