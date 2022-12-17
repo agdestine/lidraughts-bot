@@ -388,6 +388,7 @@ def play_game(li,
                         if bay_feedback_2 == 1:
                             conversation.send_message("player", "Fèk gen yon lòt erè nan pati a.")
                             conversation.send_message("spectator", "Fèk gen yon lòt erè nan pati a.")
+                        bay_feedback_2 = bay_feedback_2 + 1
 
                     #END
                     move_attempted = True
