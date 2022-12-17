@@ -381,14 +381,14 @@ def play_game(li,
                         conversation.send_message("player", "Pati sa a fin jwe.")
                         conversation.send_message("spectator", "Pati sa a fin jwe.")
                         bay_feedback_1 = False
-                    if best_move.a_win_is_coming is False and best_move.oups_mistake and bay_feedback_2 < 2:
+                    if bay_feedback_1 is False and best_move.oups_mistake and bay_feedback_2 < 2:
                         if bay_feedback_2 == 0:
                             conversation.send_message("player", "Fèk gen yon erè la a.")
                             conversation.send_message("spectator", "Fèk gen yon erè la a.")
-                        if bay_feedback_2 == 1:
-                            conversation.send_message("player", "Fèk gen yon lòt erè nan pati a.")
-                            conversation.send_message("spectator", "Fèk gen yon lòt erè nan pati a.")
-                        bay_feedback_2 = bay_feedback_2 + 1
+                        # if bay_feedback_2 == 1:
+                        #    conversation.send_message("player", "Fèk gen yon lòt erè nan pati a.")
+                        #    conversation.send_message("spectator", "Fèk gen yon lòt erè nan pati a.")
+                        bay_feedback_2 = bay_feedback_2 + 2
 
                     #END
                     move_attempted = True
