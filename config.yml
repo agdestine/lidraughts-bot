@@ -74,8 +74,8 @@ challenge:                   # Incoming challenges.
 #    - classical
 #    - correspondence
   modes:                     # Game modes to accept.
-#    - casual                 # Unrated games.
-    - rated                  # Rated games - must comment if the engine doesn't try to win.
+    - casual                 # Unrated games.
+#    - rated                  # Rated games - must comment if the engine doesn't try to win.
 
 greeting:
   # Optional substitution keywords (include curly braces):
