@@ -320,6 +320,11 @@ def play_game(li,
     first_move = True
     disconnect_time = 0
     prior_game = None
+    #Archange007
+    bay_feedback_1 = True
+    bay_feedback_2 = 0
+    #END
+
     while not terminated:
         move_attempted = False
         try:
@@ -371,6 +376,20 @@ def play_game(li,
                             best_move = choose_move(engine, board, game, draw_offered, start_time, move_overhead,
                                                     move_overhead_inc)
                     #print("best_move:"+str(best_move.move))
+                    #Archange007--Feedback to user
+                    if best_move.a_win_is_coming and bay_feedback_1 :
+                        conversation.send_message("player", "Pati sa a fin jwe.")
+                        conversation.send_message("spectator", "Pati sa a fin jwe.")
+                        bay_feedback_1 = False
+                    if best_move.a_win_is_coming is False and best_move.oups_mistake and bay_feedback_2 < 2:
+                        if bay_feedback_2 == 0:
+                            conversation.send_message("player", "Fèk gen yon erè la a.")
+                            conversation.send_message("spectator", "Fèk gen yon erè la a.")
+                        if bay_feedback_2 == 1:
+                            conversation.send_message("player", "Fèk gen yon lòt erè nan pati a.")
+                            conversation.send_message("spectator", "Fèk gen yon lòt erè nan pati a.")
+
+                    #END
                     move_attempted = True
                     if best_move.resigned and len(board.move_stack) >= 2:
                         li.resign(game.id)

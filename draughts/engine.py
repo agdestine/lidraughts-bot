@@ -24,6 +24,9 @@ class PlayResult:
         self.info = info
         self.draw_offered = draw_offered
         self.resigned = resigned
+        #Archange007
+        self.a_win_is_coming = False
+        self.oups_mistake = False
 
 
 __all__ = ['HubEngine', 'DXPEngine', 'CheckerBoardEngine', 'Limit', 'PlayResult']
