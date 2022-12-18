@@ -378,17 +378,19 @@ def play_game(li,
                     #print("best_move:"+str(best_move.move))
                     #Archange007--Feedback to user
                     if best_move.a_win_is_coming and bay_feedback_1 :
-                        conversation.send_message("player", "Pati sa a fin jwe.")
-                        conversation.send_message("spectator", "Pati sa a fin jwe.")
+                        conversation.send_message("player", "I think it's over. Pati sa a fin jwe.")
+                        conversation.send_message("spectator", "I think it's over. Pati sa a fin jwe.")
                         bay_feedback_1 = False
-                    if bay_feedback_1 is False and best_move.oups_mistake and bay_feedback_2 < 2:
+                    if bay_feedback_1 is True and best_move.oups_mistake and bay_feedback_2 < 3:
                         if bay_feedback_2 == 0:
-                            conversation.send_message("player", "Fèk gen yon erè la a.")
-                            conversation.send_message("spectator", "Fèk gen yon erè la a.")
-                        # if bay_feedback_2 == 1:
-                        #    conversation.send_message("player", "Fèk gen yon lòt erè nan pati a.")
-                        #    conversation.send_message("spectator", "Fèk gen yon lòt erè nan pati a.")
-                        bay_feedback_2 = bay_feedback_2 + 2
+                            conversation.send_message("player", "That move was a mistake. Fèk gen yon erè la a.")
+                            conversation.send_message("spectator", "That move was a mistake. Fèk gen yon erè la a.")
+                        if bay_feedback_2 == 1:
+                            pass
+                        if bay_feedback_2 == 2:
+                            conversation.send_message("player", "Come on, Another mistake ! Fèk gen yon lòt erè nan pati a.")
+                            conversation.send_message("spectator", "Come on, Another mistake ! Fèk gen yon lòt erè nan pati a.")
+                        bay_feedback_2 = bay_feedback_2 + 1
 
                     #END
                     move_attempted = True

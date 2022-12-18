@@ -159,10 +159,10 @@ class EngineWrapper:
         #Archange007
         if len(self.scores) > 2:
             #print("DIFF = " + str(abs(actual(self.scores[-2]) - actual(self.scores[-1]))))
-            if abs(actual(self.scores[-2])-actual(self.scores[-1])) >= 40:
+            if abs(actual(self.scores[-2])-actual(self.scores[-1])) > 40:
                 result.oups_mistake = True
         #print("SCORE = " + str(abs(actual(self.scores[-1]))))
-        if abs(actual(self.scores[-1])) > 200:
+        if abs(actual(self.scores[-1])) > 250:
             result.a_win_is_coming = True
         #END
 
