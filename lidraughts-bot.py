@@ -1,6 +1,4 @@
 import argparse
-from typing import List
-
 import draughts
 import draughts.engine
 import engine_wrapper
@@ -90,10 +88,6 @@ def logging_configurer(level, filename):
         file_handler.setFormatter(file_formatter)
         all_handlers.append(file_handler)
 
-    #removed forced arg
-    #logging.basicConfig(level=level,
-    #                    handlers=all_handlers,
-    #                    force=True)
     logging.basicConfig(level=level,
                         handlers=all_handlers)
 
@@ -330,6 +324,10 @@ def play_game(li,
     first_move = True
     disconnect_time = 0
     prior_game = None
+    #Archange007
+    bay_feedback_1 = True
+    bay_feedback_2 = 0
+    #END
 
     # AGD load GMI moves
     with open("RB_W.txt", 'r') as f:
@@ -388,18 +386,35 @@ def play_game(li,
                             best_move = choose_move(engine, board, game, draw_offered, start_time, move_overhead,
                                                     move_overhead_inc)
                     #print("best_move:"+str(best_move.move))
+                    #Archange007--Feedback to user
+                    if best_move.a_win_is_coming and bay_feedback_1 :
+                        conversation.send_message("player", "I think it's over. Pati sa a fin jwe.")
+                        conversation.send_message("spectator", "I think it's over. Pati sa a fin jwe.")
+                        bay_feedback_1 = False
+                    if bay_feedback_1 is True and best_move.oups_mistake and bay_feedback_2 < 3:
+                        if bay_feedback_2 == 0:
+                            conversation.send_message("player", "That move was a mistake. Fèk gen yon erè la a.")
+                            conversation.send_message("spectator", "That move was a mistake. Fèk gen yon erè la a.")
+                        if bay_feedback_2 == 1:
+                            pass
+                        if bay_feedback_2 == 2:
+                            conversation.send_message("player", "Come on, Another mistake ! Fèk gen yon lòt erè nan pati a.")
+                            conversation.send_message("spectator", "Come on, Another mistake ! Fèk gen yon lòt erè nan pati a.")
+                        bay_feedback_2 = bay_feedback_2 + 1
+
+                    #END
                     move_attempted = True
                     if best_move.resigned and len(board.move_stack) >= 2:
                         li.resign(game.id)
                     else:
-                        #AGD
-                        #Make GMI Human Move if possible:
+                        # AGD
+                        # Make GMI Human Move if possible:
                         if game.my_color == "white":
                             print("--- STUDY : ---")
                             if len(board.move_stack) < 2:
-                                rand = random.randint(0, len(openings_from_gmi)-1)
+                                rand = random.randint(0, len(openings_from_gmi) - 1)
                                 line = openings_from_gmi[rand]
-                                best_move.move.li_api_move=[line[0:4]]
+                                best_move.move.li_api_move = [line[0:4]]
                                 print("FROM GMI")
                             else:
                                 str_moves = ""
@@ -408,10 +423,10 @@ def play_game(li,
                                     str_moves = str_moves + move + " "
                                 for line in openings_from_gmi:
                                     if line.startswith(str_moves):
-                                        next_move_options.append(line[len(str_moves):len(str_moves)+4])
+                                        next_move_options.append(line[len(str_moves):len(str_moves) + 4])
 
                                 if len(next_move_options) > 0:
-                                    rand = random.randint(0, len(next_move_options)-1)
+                                    rand = random.randint(0, len(next_move_options) - 1)
                                     best_move.move.li_api_move = [next_move_options[rand]]
                                     print("FROM GMI")
 
@@ -423,12 +438,11 @@ def play_game(li,
                                 str_moves = str_moves + move + " "
                             for line in openings_from_gmi:
                                 if line.startswith(str_moves):
-                                    next_move_options.append(line[len(str_moves):len(str_moves)+4])
+                                    next_move_options.append(line[len(str_moves):len(str_moves) + 4])
                             if len(next_move_options) > 0:
-                                rand = random.randint(0, len(next_move_options)-1)
+                                rand = random.randint(0, len(next_move_options) - 1)
                                 best_move.move.li_api_move = [next_move_options[rand]]
                                 print("FROM GMI")
-
                         li.make_move(game.id, best_move)
                     ponder_thread, ponder_li_one = start_pondering(engine, board, game, can_ponder, best_move,
                                                                    start_time, move_overhead, move_overhead_inc)
@@ -517,7 +531,7 @@ def choose_move(engine, board, game, draw_offered, start_time, move_overhead, mo
     wb = "w" if board.whose_turn() == draughts.WHITE else "b"
     game.state[f"{wb}time"] = max(0, game.state[f"{wb}time"] - overhead)
     game.state[f"{wb}inc"] = max(0, game.state[f"{wb}inc"] - move_overhead_inc)
-    #logger.info("Searching for wtime {wtime} btime {btime}".format_map(game.state))
+    logger.info("Searching for wtime {wtime} btime {btime}".format_map(game.state))
     return engine.search_with_ponder(board, game.state["wtime"], game.state["btime"], game.state["winc"],
                                      game.state["binc"], False, draw_offered)
 
@@ -667,7 +681,6 @@ def intro():
 
 
 def start_lichess_bot():
-
     parser = argparse.ArgumentParser(description="Play on Lidraughts with a bot")
     parser.add_argument("-u", action="store_true", help="Upgrade your account to a bot account.")
     parser.add_argument("-v", action="store_true", help="Make output more verbose. Include all communication with lichess.")
