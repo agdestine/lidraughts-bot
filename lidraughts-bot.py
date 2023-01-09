@@ -1,4 +1,6 @@
 import argparse
+from typing import List
+
 import draughts
 import draughts.engine
 import engine_wrapper
@@ -28,6 +30,10 @@ __version__ = "1.2.0"
 
 terminated = False
 
+#AGD
+#Save file contents
+import random
+openings_from_gmi = None
 
 def signal_handler(signal, frame):
     global terminated
@@ -85,7 +91,8 @@ def logging_configurer(level, filename):
         all_handlers.append(file_handler)
 
     logging.basicConfig(level=level,
-                        handlers=all_handlers)
+                        handlers=all_handlers,
+                        force=True)
 
 
 def logging_listener_proc(queue, configurer, level, log_filename):
@@ -320,6 +327,13 @@ def play_game(li,
     first_move = True
     disconnect_time = 0
     prior_game = None
+
+    # AGD load GMI moves
+    with open("RB_W.txt", 'r') as f:
+        openings_from_gmi = [str(line) for line in f]  # save numbers to a list
+    with open("RB_B.txt", 'r') as f:
+        openings_from_gmi_Black = [str(line) for line in f]  # save numbers to a list
+
     while not terminated:
         move_attempted = False
         try:
@@ -375,6 +389,43 @@ def play_game(li,
                     if best_move.resigned and len(board.move_stack) >= 2:
                         li.resign(game.id)
                     else:
+                        #AGD
+                        #Make GMI Human Move if possible:
+                        if game.my_color == "white":
+                            print("--- STUDY : ---")
+                            if len(board.move_stack) < 2:
+                                rand = random.randint(0, len(openings_from_gmi)-1)
+                                line = openings_from_gmi[rand]
+                                best_move.move.li_api_move=[line[0:4]]
+                                print("FROM GMI")
+                            else:
+                                str_moves = ""
+                                next_move_options = []
+                                for move in moves:
+                                    str_moves = str_moves + move + " "
+                                for line in openings_from_gmi:
+                                    if line.startswith(str_moves):
+                                        next_move_options.append(line[len(str_moves):len(str_moves)+4])
+
+                                if len(next_move_options) > 0:
+                                    rand = random.randint(0, len(next_move_options)-1)
+                                    best_move.move.li_api_move = [next_move_options[rand]]
+                                    print("FROM GMI")
+
+                        if game.my_color != "white":
+                            print("--- STUDY BLACK: ---")
+                            str_moves = ""
+                            next_move_options = []
+                            for move in moves:
+                                str_moves = str_moves + move + " "
+                            for line in openings_from_gmi:
+                                if line.startswith(str_moves):
+                                    next_move_options.append(line[len(str_moves):len(str_moves)+4])
+                            if len(next_move_options) > 0:
+                                rand = random.randint(0, len(next_move_options)-1)
+                                best_move.move.li_api_move = [next_move_options[rand]]
+                                print("FROM GMI")
+
                         li.make_move(game.id, best_move)
                     ponder_thread, ponder_li_one = start_pondering(engine, board, game, can_ponder, best_move,
                                                                    start_time, move_overhead, move_overhead_inc)
@@ -463,7 +514,7 @@ def choose_move(engine, board, game, draw_offered, start_time, move_overhead, mo
     wb = "w" if board.whose_turn() == draughts.WHITE else "b"
     game.state[f"{wb}time"] = max(0, game.state[f"{wb}time"] - overhead)
     game.state[f"{wb}inc"] = max(0, game.state[f"{wb}inc"] - move_overhead_inc)
-    logger.info("Searching for wtime {wtime} btime {btime}".format_map(game.state))
+    #logger.info("Searching for wtime {wtime} btime {btime}".format_map(game.state))
     return engine.search_with_ponder(board, game.state["wtime"], game.state["btime"], game.state["winc"],
                                      game.state["binc"], False, draw_offered)
 
@@ -613,6 +664,7 @@ def intro():
 
 
 def start_lichess_bot():
+
     parser = argparse.ArgumentParser(description="Play on Lidraughts with a bot")
     parser.add_argument("-u", action="store_true", help="Upgrade your account to a bot account.")
     parser.add_argument("-v", action="store_true", help="Make output more verbose. Include all communication with lichess.")
