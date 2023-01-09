@@ -90,9 +90,12 @@ def logging_configurer(level, filename):
         file_handler.setFormatter(file_formatter)
         all_handlers.append(file_handler)
 
+    #removed forced arg
+    #logging.basicConfig(level=level,
+    #                    handlers=all_handlers,
+    #                    force=True)
     logging.basicConfig(level=level,
-                        handlers=all_handlers,
-                        force=True)
+                        handlers=all_handlers)
 
 
 def logging_listener_proc(queue, configurer, level, log_filename):
