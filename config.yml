@@ -4,6 +4,7 @@ url: "https://lidraughts.org/"  # Lidraughts base URL.
 engine:                      # Engine settings.
   dir: "."          # Directory containing the engine. This can be an absolute path or one relative to lidraughts-bot/.
   name: "scan_linux"        # Binary name of the engine to use.
+#  name: "scan.exe"        # Binary name of the engine to use.
   engine_argument: "hub"
   working_dir: "."  # Directory where the draughts engine will read and write files. If blank or missing, the current directory is used.
   protocol: "hub"            # "hub", "dxp", "cb" (checkerboard) or "homemade"

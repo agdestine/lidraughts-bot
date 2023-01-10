@@ -156,6 +156,16 @@ class EngineWrapper:
                 return actual(score) <= resign_score
             if len(scores) == len(list(filter(score_near_loss, scores))):
                 result.resigned = True
+        #Archange007
+        if len(self.scores) > 2:
+            #print("DIFF = " + str(abs(actual(self.scores[-2]) - actual(self.scores[-1]))))
+            if abs(actual(self.scores[-2])-actual(self.scores[-1])) > 40:
+                result.oups_mistake = True
+        #print("SCORE = " + str(abs(actual(self.scores[-1]))))
+        if abs(actual(self.scores[-1])) > 250:
+            result.a_win_is_coming = True
+        #END
+
         return result
 
     def search(self, board, time_limit, ponder, draw_offered):
