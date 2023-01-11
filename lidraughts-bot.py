@@ -428,7 +428,7 @@ def play_game(li,
                                 if len(next_move_options) > 0:
                                     rand = random.randint(0, len(next_move_options) - 1)
                                     best_move.move.li_api_move = [next_move_options[rand]]
-                                    print("FROM GMI")
+                                    print("FROM GMI:"+str_moves+"_"+next_move_options[rand])
 
                         if game.my_color != "white":
                             print("--- STUDY BLACK: ---")
@@ -436,13 +436,13 @@ def play_game(li,
                             next_move_options = []
                             for move in moves:
                                 str_moves = str_moves + move + " "
-                            for line in openings_from_gmi:
+                            for line in openings_from_gmi_Black:
                                 if line.startswith(str_moves):
                                     next_move_options.append(line[len(str_moves):len(str_moves) + 4])
                             if len(next_move_options) > 0:
                                 rand = random.randint(0, len(next_move_options) - 1)
                                 best_move.move.li_api_move = [next_move_options[rand]]
-                                print("FROM GMI")
+                                print("FROM GMI:"+str_moves+"_"+next_move_options[rand])
                         li.make_move(game.id, best_move)
                     ponder_thread, ponder_li_one = start_pondering(engine, board, game, can_ponder, best_move,
                                                                    start_time, move_overhead, move_overhead_inc)
