@@ -443,7 +443,7 @@ def play_game(li,
                                                             move_overhead,
                                                             move_overhead_inc)
 
-                        if game.my_color != "white" and len(board.move_stack) < 10:
+                        elif game.my_color != "white" and len(board.move_stack) < 10:
                             print("--- STUDY BLACK: ---")
                             str_moves = ""
                             next_move_options = []
@@ -460,6 +460,11 @@ def play_game(li,
                                 print("FROM GMI:" + str_moves + "_" + next_move_options[rand])
                             else:
                                 best_move = choose_move(engine, board, game, draw_offered, start_time, move_overhead, move_overhead_inc)
+                        else:
+                            if len(board.move_stack) == 10:
+                                best_move = choose_move(engine, board, game, draw_offered, start_time, move_overhead,
+                                                        move_overhead_inc)
+
                         li.make_move(game.id, best_move)
                     ponder_thread, ponder_li_one = start_pondering(engine, board, game, can_ponder, best_move,
                                                                    start_time, move_overhead, move_overhead_inc)
