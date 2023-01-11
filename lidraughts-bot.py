@@ -28,10 +28,12 @@ __version__ = "1.2.0"
 
 terminated = False
 
-#AGD
-#Save file contents
+# AGD
+# Save file contents
 import random
+
 openings_from_gmi = None
+
 
 def signal_handler(signal, frame):
     global terminated
@@ -131,7 +133,8 @@ def start(li, user_profile, config, logging_level, log_filename, one_game=False)
     correspondence_pinger.start()
     correspondence_queue = manager.Queue()
     correspondence_queue.put("")
-    startup_correspondence_games = [game["gameId"] for game in li.get_ongoing_games() if game["perf"] == "correspondence"]
+    startup_correspondence_games = [game["gameId"] for game in li.get_ongoing_games() if
+                                    game["perf"] == "correspondence"]
     wait_for_correspondence_ping = False
     last_check_online_time = time.time()
 
@@ -171,8 +174,9 @@ def start(li, user_profile, config, logging_level, log_filename, one_game=False)
                 logger.warning("Unable to handle response from lidraughts.org:")
                 logger.warning(event)
                 if event.get("error") == "Missing scope":
-                    logger.warning('Please check that the API access token for your bot has the scope "Play games with the bot'
-                                   ' API".')
+                    logger.warning(
+                        'Please check that the API access token for your bot has the scope "Play games with the bot'
+                        ' API".')
                 continue
 
             if event["type"] == "terminated":
@@ -209,7 +213,8 @@ def start(li, user_profile, config, logging_level, log_filename, one_game=False)
 
             is_correspondence_ping = event["type"] == "correspondence_ping"
             is_local_game_done = event["type"] == "local_game_done"
-            if (is_correspondence_ping or (is_local_game_done and not wait_for_correspondence_ping)) and not challenge_queue:
+            if (is_correspondence_ping or (
+                    is_local_game_done and not wait_for_correspondence_ping)) and not challenge_queue:
                 if is_correspondence_ping and wait_for_correspondence_ping:
                     correspondence_queue.put("")
 
@@ -304,13 +309,14 @@ def play_game(li,
     can_ponder = ponder_cfg.get("ponder", False)
     move_overhead = config.get("move_overhead", 1000)
     move_overhead_inc = config.get("move_overhead_inc", 100)
-    delay_seconds = config.get("rate_limiting_delay", 0)/1000
+    delay_seconds = config.get("rate_limiting_delay", 0) / 1000
 
     greeting_cfg = config.get("greeting") or {}
     keyword_map = defaultdict(str, me=game.me.name, opponent=game.opponent.name)
 
     def get_greeting(greeting):
         return str(greeting_cfg.get(greeting) or "").format_map(keyword_map)
+
     hello = get_greeting("hello")
     goodbye = get_greeting("goodbye")
     hello_spectators = get_greeting("hello_spectators")
@@ -324,10 +330,10 @@ def play_game(li,
     first_move = True
     disconnect_time = 0
     prior_game = None
-    #Archange007
+    # Archange007
     bay_feedback_1 = True
     bay_feedback_2 = 0
-    #END
+    # END
 
     # AGD load GMI moves
     with open("RB_W.txt", 'r') as f:
@@ -344,7 +350,7 @@ def play_game(li,
             else:
                 binary_chunk = next(lines)
                 upd = json.loads(binary_chunk.decode("utf-8")) if binary_chunk else None
-            logger.debug(f"Game state: {upd}")
+            #logger.debug(f"Game state: {upd}")
 
             u_type = upd["type"] if upd else "ping"
             if u_type == "chatLine":
@@ -356,7 +362,7 @@ def play_game(li,
                 if upd["moves"] and len(upd["moves"].split()[-1]) != 4:
                     continue
                 moves = upd["moves"].split()
-                #print("--- upd[moves] : "+upd["moves"])
+                # print("--- upd[moves] : "+upd["moves"])
                 moves_to_get = len(moves) - len(old_moves)
                 if moves_to_get > 0:
                     for move in moves[-moves_to_get:]:
@@ -385,9 +391,9 @@ def play_game(li,
                         if best_move.move is None:
                             best_move = choose_move(engine, board, game, draw_offered, start_time, move_overhead,
                                                     move_overhead_inc)
-                    #print("best_move:"+str(best_move.move))
-                    #Archange007--Feedback to user
-                    if best_move.a_win_is_coming and bay_feedback_1 :
+                    # print("best_move:"+str(best_move.move))
+                    # Archange007--Feedback to user
+                    if best_move.a_win_is_coming and bay_feedback_1:
                         conversation.send_message("player", "I think it's over. Pati sa a fin jwe.")
                         conversation.send_message("spectator", "I think it's over. Pati sa a fin jwe.")
                         bay_feedback_1 = False
@@ -398,18 +404,20 @@ def play_game(li,
                         if bay_feedback_2 == 1:
                             pass
                         if bay_feedback_2 == 2:
-                            conversation.send_message("player", "Come on, Another mistake ! Fèk gen yon lòt erè nan pati a.")
-                            conversation.send_message("spectator", "Come on, Another mistake ! Fèk gen yon lòt erè nan pati a.")
+                            conversation.send_message("player",
+                                                      "Come on, Another mistake ! Fèk gen yon lòt erè nan pati a.")
+                            conversation.send_message("spectator",
+                                                      "Come on, Another mistake ! Fèk gen yon lòt erè nan pati a.")
                         bay_feedback_2 = bay_feedback_2 + 1
 
-                    #END
+                    # END
                     move_attempted = True
                     if best_move.resigned and len(board.move_stack) >= 2:
                         li.resign(game.id)
                     else:
                         # AGD
                         # Make GMI Human Move if possible:
-                        if game.my_color == "white":
+                        if game.my_color == "white" and len(board.move_stack) < 10:
                             print("--- STUDY : ---")
                             if len(board.move_stack) < 2:
                                 rand = random.randint(0, len(openings_from_gmi) - 1)
@@ -421,30 +429,37 @@ def play_game(li,
                                 next_move_options = []
                                 for move in moves:
                                     str_moves = str_moves + move + " "
+                                count = 0
                                 for line in openings_from_gmi:
                                     if line.startswith(str_moves):
                                         next_move_options.append(line[len(str_moves):len(str_moves) + 4])
-
-                                if len(next_move_options) > 0:
+                                        count = count + 1
+                                if count > 0:
                                     rand = random.randint(0, len(next_move_options) - 1)
-                                    if len(next_move_options[rand]) == 4:
-                                        best_move.move.li_api_move = [next_move_options[rand]]
-                                        print("FROM GMI:"+str_moves+"_"+next_move_options[rand])
+                                    best_move.move.li_api_move = [next_move_options[rand]]
+                                    print("FROM GMI:" + str_moves + "_" + next_move_options[rand])
+                                else:
+                                    best_move = choose_move(engine, board, game, draw_offered, start_time,
+                                                            move_overhead,
+                                                            move_overhead_inc)
 
-                        if game.my_color != "white":
+                        if game.my_color != "white" and len(board.move_stack) < 10:
                             print("--- STUDY BLACK: ---")
                             str_moves = ""
                             next_move_options = []
                             for move in moves:
                                 str_moves = str_moves + move + " "
+                            count = 0
                             for line in openings_from_gmi_Black:
                                 if line.startswith(str_moves):
                                     next_move_options.append(line[len(str_moves):len(str_moves) + 4])
-                            if len(next_move_options) > 0:
+                                    count = count + 1
+                            if count > 0:
                                 rand = random.randint(0, len(next_move_options) - 1)
-                                if len(next_move_options[rand]) == 4:
-                                    best_move.move.li_api_move = [next_move_options[rand]]
-                                    print("FROM GMI:"+str_moves+"_"+next_move_options[rand])
+                                best_move.move.li_api_move = [next_move_options[rand]]
+                                print("FROM GMI:" + str_moves + "_" + next_move_options[rand])
+                            else:
+                                best_move = choose_move(engine, board, game, draw_offered, start_time, move_overhead, move_overhead_inc)
                         li.make_move(game.id, best_move)
                     ponder_thread, ponder_li_one = start_pondering(engine, board, game, can_ponder, best_move,
                                                                    start_time, move_overhead, move_overhead_inc)
@@ -492,10 +507,9 @@ def play_game(li,
         correspondence_queue.put(game_id)
     else:
         logger.info(f"--- {game.url()} Game over")
-        #Added by me...
+        # Added by me...
         conversation.send_message("player", goodbye)
         conversation.send_message("spectator", goodbye_spectators)
-        
 
     control_queue.put_nowait({"type": "local_game_done"})
 
@@ -516,14 +530,14 @@ def parse_variant(variant):
 
 
 def choose_move_time(engine, board, search_time, draw_offered):
-    logger.info(f"Searching for time {search_time}")
+    #logger.info(f"Searching for time {search_time}")
     return engine.search_for(board, search_time, draw_offered)
 
 
 def choose_first_move(engine, board, draw_offered):
     # need to hardcode first movetime (10000 ms) since Lidraughts has 30 sec limit.
     search_time = 10000
-    logger.info(f"Searching for time {search_time}")
+    #logger.info(f"Searching for time {search_time}")
     return engine.first_search(board, search_time, draw_offered)
 
 
@@ -533,7 +547,7 @@ def choose_move(engine, board, game, draw_offered, start_time, move_overhead, mo
     wb = "w" if board.whose_turn() == draughts.WHITE else "b"
     game.state[f"{wb}time"] = max(0, game.state[f"{wb}time"] - overhead)
     game.state[f"{wb}inc"] = max(0, game.state[f"{wb}inc"] - move_overhead_inc)
-    logger.info("Searching for wtime {wtime} btime {btime}".format_map(game.state))
+    #logger.info("Searching for wtime {wtime} btime {btime}".format_map(game.state))
     return engine.search_with_ponder(board, game.state["wtime"], game.state["btime"], game.state["winc"],
                                      game.state["binc"], False, draw_offered)
 
@@ -565,8 +579,9 @@ def start_pondering(engine, board, game, can_ponder, best_move, start_time, move
         best_move = engine.search_with_ponder(board, wtime, btime, winc, binc, True, False)
         ponder_results[game.id] = best_move
 
-    logger.info(f"Pondering for wtime {wtime} btime {btime}")
-    ponder_thread = threading.Thread(target=ponder_thread_func, args=(game, engine, ponder_board, wtime, btime, winc, binc))
+    #logger.info(f"Pondering for wtime {wtime} btime {btime}")
+    ponder_thread = threading.Thread(target=ponder_thread_func,
+                                     args=(game, engine, ponder_board, wtime, btime, winc, binc))
     ponder_thread.start()
     return ponder_thread, best_move.ponder.li_one_move
 
@@ -685,7 +700,8 @@ def intro():
 def start_lichess_bot():
     parser = argparse.ArgumentParser(description="Play on Lidraughts with a bot")
     parser.add_argument("-u", action="store_true", help="Upgrade your account to a bot account.")
-    parser.add_argument("-v", action="store_true", help="Make output more verbose. Include all communication with lichess.")
+    parser.add_argument("-v", action="store_true",
+                        help="Make output more verbose. Include all communication with lichess.")
     parser.add_argument("--config", help="Specify a configuration file (defaults to ./config.yml)")
     parser.add_argument("-l", "--logfile", help="Record all console output to a log file.", default=None)
     args = parser.parse_args()
