@@ -426,10 +426,9 @@ def play_game(li,
                                         next_move_options.append(line[len(str_moves):len(str_moves) + 4])
 
                                 if len(next_move_options) > 0:
-                                    if len(next_move_options[rand]) == 4:
-                                        rand = random.randint(0, len(next_move_options) - 1)
-                                        best_move.move.li_api_move = [next_move_options[rand]]
-                                        print("FROM GMI:"+str_moves+"_"+next_move_options[rand])
+                                    rand = random.randint(0, len(next_move_options) - 1)
+                                    best_move.move.li_api_move = [next_move_options[rand]]
+                                    print("FROM GMI:"+str_moves+"_"+next_move_options[rand])
 
                         if game.my_color != "white":
                             print("--- STUDY BLACK: ---")
@@ -442,9 +441,8 @@ def play_game(li,
                                     next_move_options.append(line[len(str_moves):len(str_moves) + 4])
                             if len(next_move_options) > 0:
                                 rand = random.randint(0, len(next_move_options) - 1)
-                                if len(next_move_options[rand]) == 4:
-                                    best_move.move.li_api_move = [next_move_options[rand]]
-                                    print("FROM GMI:"+str_moves+"_"+next_move_options[rand])
+                                best_move.move.li_api_move = [next_move_options[rand]]
+                                print("FROM GMI:"+str_moves+"_"+next_move_options[rand])
                         li.make_move(game.id, best_move)
                     ponder_thread, ponder_li_one = start_pondering(engine, board, game, can_ponder, best_move,
                                                                    start_time, move_overhead, move_overhead_inc)
