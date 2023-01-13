@@ -341,6 +341,7 @@ def play_game(li,
     with open("RB_B.txt", 'r') as f:
         openings_from_gmi_Black = [str(line) for line in f]  # save numbers to a list
 
+    move_error = False
     while not terminated:
         move_attempted = False
         try:
@@ -417,8 +418,9 @@ def play_game(li,
                     else:
                         # AGD
                         # Make GMI Human Move if possible:
-                        if game.my_color == "white" and len(board.move_stack) < 10:
+                        if game.my_color == "white" and len(board.move_stack) < 10 and move_error == False:
                             print("--- STUDY : ---")
+                            move_error = True
                             if len(board.move_stack) < 2:
                                 rand = random.randint(0, len(openings_from_gmi) - 1)
                                 line = openings_from_gmi[rand]
@@ -443,7 +445,8 @@ def play_game(li,
                                                             move_overhead,
                                                             move_overhead_inc)
 
-                        elif game.my_color != "white" and len(board.move_stack) < 10:
+                        elif game.my_color != "white" and len(board.move_stack) < 10 and move_error == False:
+                            move_error = True
                             print("--- STUDY BLACK: ---")
                             str_moves = ""
                             next_move_options = []
@@ -460,12 +463,16 @@ def play_game(li,
                                 print("FROM GMI:" + str_moves + "_" + next_move_options[rand])
                             else:
                                 best_move = choose_move(engine, board, game, draw_offered, start_time, move_overhead, move_overhead_inc)
+                        #elif move_error:
+                        #    best_move = choose_move(engine, board, game, draw_offered, start_time, move_overhead,
+                        #                            move_overhead_inc)
                         else:
                             if len(board.move_stack) == 10:
                                 best_move = choose_move(engine, board, game, draw_offered, start_time, move_overhead,
                                                         move_overhead_inc)
 
                         li.make_move(game.id, best_move)
+                        move_error = False
                     ponder_thread, ponder_li_one = start_pondering(engine, board, game, can_ponder, best_move,
                                                                    start_time, move_overhead, move_overhead_inc)
                     time.sleep(delay_seconds)
@@ -493,6 +500,11 @@ def play_game(li,
                     break
         except (HTTPError, ReadTimeout, RemoteDisconnected, ChunkedEncodingError, ConnectionError):
             if move_attempted:
+                if move_error:
+                    best_move = choose_move(engine, board, game, draw_offered, start_time, move_overhead,
+                                            move_overhead_inc)
+                    li.make_move(game.id, best_move)
+                    move_error = False
                 continue
             if game.id not in (ongoing_game["gameId"] for ongoing_game in li.get_ongoing_games()):
                 break
