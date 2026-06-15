@@ -4,6 +4,7 @@ on:
   schedule:
     # Run at 2 AM UTC (10 PM EST/9 PM EDT with daylight saving)
     - cron: '0 2 * * *'
+  workflow_dispatch:
 
 jobs:
   run-bot:
