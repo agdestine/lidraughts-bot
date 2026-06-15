@@ -40,28 +40,69 @@ def is_past_challenge_cutoff():
     et_now = datetime.now(timezone(timedelta(hours=-4)))  # EDT
     cutoff = et_now.replace(hour=20, minute=40, second=0, microsecond=0)
     return et_now >= cutoff
+
+
+
 # AGD
-# Only accept challenges from members of these teams (exact team ID, lowercase)
+import json
+import requests
+import time
+
 ALLOWED_TEAMS = {
     "damye-ayisyen",
 }
+# Only accept challenges from members of these teams (exact team ID, lowercase)
+
+
+_user_cache = {}
+_cache_ttl = 300  # 5 minutes
 
 def is_in_allowed_team(li, username):
-    """Check if a user is in any of the allowed teams."""
+    """Check if user belongs to an allowed team via their public profile."""
+    global _user_cache
+    now = time.time()
+    username = username.lower()
+
+    # Return cached result if fresh
+    if username in _user_cache and now - _user_cache[username]["time"] < _cache_ttl:
+        result = _user_cache[username]["result"]
+        logger.info(f"Cache hit for {username}: {'✅' if result else '❌'}")
+        return result
+
     try:
-        for team_id in ALLOWED_TEAMS:
-            response = li.api_get(f"team/{team_id}/users")
-            # API returns newline-delimited JSON, one user per line
-            for line in response.text.strip().split("\n"):
-                if not line:
-                    continue
-                import json
-                user = json.loads(line)
-                if user.get("id", "").lower() == username.lower():
-                    return True
+        url = f"https://lidraughts.org/api/user/{username}"
+        response = requests.get(url, timeout=10)
+        
+        logger.info(f"Team check for {username}: HTTP {response.status_code}")
+        logger.info(f"Response: {response.text[:500]}")  # log first 500 chars to debug
+        
+        if response.status_code != 200:
+            logger.warning(f"Could not fetch user {username}: HTTP {response.status_code}")
+            _user_cache[username] = {"result": False, "time": now}
+            return False
+
+        data = response.json()
+        
+        # Log what teams field looks like
+        logger.info(f"User data keys: {list(data.keys())}")
+        
+        user_teams = set(t.lower() for t in data.get("teams", {}).get("teams", []))
+        logger.info(f"{username} teams: {user_teams}")
+        
+        result = bool(ALLOWED_TEAMS & user_teams)
+        _user_cache[username] = {"result": result, "time": now}
+        
+        if result:
+            logger.info(f"{username} is in an allowed team ✅")
+        else:
+            logger.info(f"{username} is NOT in any allowed team ❌")
+        
+        return result
+
     except Exception as e:
-        logger.warning(f"Could not check team membership for {username}: {e}")
-    return False
+        logger.warning(f"Error checking team for {username}: {e}")
+        return False
+
 
 def signal_handler(signal, frame):
     global terminated
