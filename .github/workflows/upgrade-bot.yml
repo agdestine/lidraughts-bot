@@ -20,6 +20,8 @@ jobs:
         run: pip install -r requirements.txt
 
       - name: Upgrade account to BOT
-        run: python3 lidraughts-bot.py -u
+        run: |
+          chmod +x ./scan_linux
+          python3 lidraughts-bot.py -u
         env:
           LIDRAUGHTS_BOT_TOKEN: ${{ secrets.LIDRAUGHTS_BOT_TOKEN }}
