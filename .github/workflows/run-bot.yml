@@ -25,6 +25,6 @@ jobs:
     
     - name: Run bot for 1 hour
       run: |
-        timeout 3600 python3 lidraughts-bot.py || true
+        timeout 3600 python3 lidraughts-bot.py -u || true
       env:
         LIDRAUGHTS_BOT_TOKEN: ${{ secrets.LIDRAUGHTS_BOT_TOKEN }}
