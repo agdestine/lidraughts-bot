@@ -23,10 +23,9 @@ jobs:
         python -m pip install --upgrade pip
         pip install -r requirements.txt
     
-    - name: Run bot for 1 hour
-    - name: Setup and run bot upgrade
+    - name: Setup and run bot for 1 hour
       run: |
         chmod +x ./scan_linux
-        timeout 3600 python3 lidraughts-bot.py -u || true      
+        timeout 3600 python3 lidraughts-bot.py || true      
       env:
         LIDRAUGHTS_BOT_TOKEN: ${{ secrets.LIDRAUGHTS_BOT_TOKEN }}
