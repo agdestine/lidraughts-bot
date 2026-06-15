@@ -53,60 +53,52 @@ ALLOWED_TEAMS = {
 }
 # Only accept challenges from members of these teams (exact team ID, lowercase)
 
-
-_user_cache = {}
-_cache_ttl = 300  # 5 minutes
+_team_cache = {}
+_team_cache_ttl = 3600  # 1 hour - teams change less frequently than individual users
 
 def is_in_allowed_team(li, username):
-    """Check if user belongs to an allowed team via their public profile."""
-    global _user_cache
+    """Check if user belongs to an allowed team using team membership list."""
+    global _team_cache
     now = time.time()
     username = username.lower()
 
-    # Return cached result if fresh
-    #logger for debug purpose only
-    #logger.info(f"Raw teams data: {data.get('teams')}")
+    # Check cache for this user across all teams
+    for team_id in ALLOWED_TEAMS:
+        cache_key = f"{team_id}_members"
+        
+        # Refresh cache if needed
+        if cache_key not in _team_cache or now - _team_cache[cache_key]["time"] > _team_cache_ttl:
+            try:
+                url = f"https://lidraughts.org/api/team/{team_id}/users"
+                response = requests.get(url, timeout=10)
+                
+                if response.status_code != 200:
+                    logger.warning(f"Could not fetch team {team_id}: HTTP {response.status_code}")
+                    _team_cache[cache_key] = {"members": set(), "time": now}
+                    continue
+                
+                # Parse NDJSON response (one user object per line)
+                members = set()
+                for line in response.iter_lines():
+                    if line:
+                        user_data = json.loads(line)
+                        members.add(user_data.get("id", "").lower())
+                
+                _team_cache[cache_key] = {"members": members, "time": now}
+                logger.info(f"Refreshed cache for team {team_id}: {len(members)} members")
+                
+            except Exception as e:
+                logger.warning(f"Error fetching team {team_id}: {e}")
+                _team_cache[cache_key] = {"members": set(), "time": now}
+        
+        # Check if username is in this team's member list
+        members = _team_cache[cache_key]["members"]
+        if username in members:
+            logger.info(f"{username} is in allowed team {team_id} ✅")
+            return True
     
-    if username in _user_cache and now - _user_cache[username]["time"] < _cache_ttl:
-        result = _user_cache[username]["result"]
-        logger.info(f"Cache hit for {username}: {'✅' if result else '❌'}")
-        return result
-
-    try:
-        url = f"https://lidraughts.org/api/user/{username}"
-        response = requests.get(url, timeout=10)
-        
-        logger.info(f"Team check for {username}: HTTP {response.status_code}")
-        logger.info(f"Response: {response.text[:500]}")  # log first 500 chars to debug
-        
-        if response.status_code != 200:
-            logger.warning(f"Could not fetch user {username}: HTTP {response.status_code}")
-            _user_cache[username] = {"result": False, "time": now}
-            return False
-
-        data = response.json()
-        user_teams = set(t.lower() for t in data.get("teams", []))
-        logger.info(f"{username} teams: {user_teams}")
-        
-        # Log what teams field looks like
-        logger.info(f"User data keys: {list(data.keys())}")
-        
-        #user_teams = set(t.lower() for t in data.get("teams", {}).get("teams", []))
-        logger.info(f"{username} teams: {user_teams}")
-        
-        result = bool(ALLOWED_TEAMS & user_teams)
-        _user_cache[username] = {"result": result, "time": now}
-        
-        if result:
-            logger.info(f"{username} is in an allowed team ✅")
-        else:
-            logger.info(f"{username} is NOT in any allowed team ❌")
-        
-        return result
-
-    except Exception as e:
-        logger.warning(f"Error checking team for {username}: {e}")
-        return False
+    logger.info(f"{username} is NOT in any allowed team ❌")
+    return False
 
 
 def signal_handler(signal, frame):
