@@ -67,6 +67,7 @@ def is_in_allowed_team(li, username):
     #logger for debug purpose only
     logger.info(f"Raw teams data: {data.get('teams')}")
     user_teams = set(t.lower() for t in data.get("teams", []))
+    logger.info(f"{username} teams: {user_teams}")
     if username in _user_cache and now - _user_cache[username]["time"] < _cache_ttl:
         result = _user_cache[username]["result"]
         logger.info(f"Cache hit for {username}: {'✅' if result else '❌'}")
@@ -89,7 +90,7 @@ def is_in_allowed_team(li, username):
         # Log what teams field looks like
         logger.info(f"User data keys: {list(data.keys())}")
         
-        user_teams = set(t.lower() for t in data.get("teams", {}).get("teams", []))
+        #user_teams = set(t.lower() for t in data.get("teams", {}).get("teams", []))
         logger.info(f"{username} teams: {user_teams}")
         
         result = bool(ALLOWED_TEAMS & user_teams)
