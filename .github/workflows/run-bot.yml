@@ -1,31 +1,29 @@
-name: Run Lidraughts Bot
+name: Run Bot 10 PM - 11 PM EST
 
 on:
   schedule:
-    - cron: '0 0 * * *'  # 8 PM ET (EDT) every day
-  workflow_dispatch:       # lets you start it manually too
+    # Run at 2 AM UTC (10 PM EST/9 PM EDT with daylight saving)
+    - cron: '0 2 * * *'
 
 jobs:
   run-bot:
     runs-on: ubuntu-latest
-    timeout-minutes: 60
-
+    
     steps:
-      - name: Checkout repository
-        uses: actions/checkout@v3
-
-      - name: Set up Python
-        uses: actions/setup-python@v4
-        with:
-          python-version: '3.10'
-
-      - name: Install dependencies
-        run: pip install -r requirements.txt
-
-      - name: Make scan_linux executable
-        run: chmod +x scan_linux
-
-      - name: Run the bot
-        run: python3 lidraughts-bot.py -v
-        env:
-          LIDRAUGHTS_BOT_TOKEN: ${{ secrets.LIDRAUGHTS_BOT_TOKEN }}
+    - uses: actions/checkout@v3
+    
+    - name: Set up Python 3.10
+      uses: actions/setup-python@v4
+      with:
+        python-version: '3.10'
+    
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install -r requirements.txt
+    
+    - name: Run bot for 1 hour
+      run: |
+        timeout 3600 python3 lidraughts-bot.py || true
+      env:
+        LIDRAUGHTS_BOT_TOKEN: ${{ secrets.LIDRAUGHTS_BOT_TOKEN }}
