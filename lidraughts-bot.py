@@ -43,7 +43,7 @@ def is_past_challenge_cutoff():
 # AGD
 # Only accept challenges from members of these teams (exact team ID, lowercase)
 ALLOWED_TEAMS = {
-    "damye-ayisyen1",
+    "damye-ayisyen",
 }
 
 def is_in_allowed_team(li, username):
