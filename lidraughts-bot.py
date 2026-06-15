@@ -31,9 +31,37 @@ terminated = False
 # AGD
 # Save file contents
 import random
-
 openings_from_gmi = None
 
+# AGD
+from datetime import datetime, timezone, timedelta
+# Cutoff time: 8:40 PM ET (EDT = UTC-4)
+def is_past_challenge_cutoff():
+    et_now = datetime.now(timezone(timedelta(hours=-4)))  # EDT
+    cutoff = et_now.replace(hour=20, minute=40, second=0, microsecond=0)
+    return et_now >= cutoff
+# AGD
+# Only accept challenges from members of these teams (exact team ID, lowercase)
+ALLOWED_TEAMS = {
+    "damye-ayisyen1",
+}
+
+def is_in_allowed_team(li, username):
+    """Check if a user is in any of the allowed teams."""
+    try:
+        for team_id in ALLOWED_TEAMS:
+            response = li.api_get(f"team/{team_id}/users")
+            # API returns newline-delimited JSON, one user per line
+            for line in response.text.strip().split("\n"):
+                if not line:
+                    continue
+                import json
+                user = json.loads(line)
+                if user.get("id", "").lower() == username.lower():
+                    return True
+    except Exception as e:
+        logger.warning(f"Could not check team membership for {username}: {e}")
+    return False
 
 def signal_handler(signal, frame):
     global terminated
@@ -189,6 +217,18 @@ def start(li, user_profile, config, logging_level, log_filename, one_game=False)
             elif event["type"] == "challenge":
                 chlng = model.Challenge(event["challenge"])
                 is_supported, decline_reason = chlng.is_supported(challenge_config)
+
+                #Added by AGD to filter challenber
+                chal = event["challenge"]
+                challenger = chal["challenger"]["name"].lower()
+                
+                if is_past_challenge_cutoff():
+                    is_supported = False
+                    logger.info(f"Challenge declined: past 8:40 PM cutoff.")
+                elif not is_in_allowed_team(li, challenger):
+                    is_supported = False
+                    logger.info(f"Challenge declined: {challenger} is not in any allowed team.")
+                
                 if is_supported:
                     challenge_queue.append(chlng)
                     if challenge_config.get("sort_by", "best") == "best":
