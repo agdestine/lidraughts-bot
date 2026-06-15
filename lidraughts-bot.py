@@ -65,9 +65,8 @@ def is_in_allowed_team(li, username):
 
     # Return cached result if fresh
     #logger for debug purpose only
-    logger.info(f"Raw teams data: {data.get('teams')}")
-    user_teams = set(t.lower() for t in data.get("teams", []))
-    logger.info(f"{username} teams: {user_teams}")
+    #logger.info(f"Raw teams data: {data.get('teams')}")
+    
     if username in _user_cache and now - _user_cache[username]["time"] < _cache_ttl:
         result = _user_cache[username]["result"]
         logger.info(f"Cache hit for {username}: {'✅' if result else '❌'}")
@@ -86,6 +85,8 @@ def is_in_allowed_team(li, username):
             return False
 
         data = response.json()
+        user_teams = set(t.lower() for t in data.get("teams", []))
+        logger.info(f"{username} teams: {user_teams}")
         
         # Log what teams field looks like
         logger.info(f"User data keys: {list(data.keys())}")
