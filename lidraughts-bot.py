@@ -35,10 +35,10 @@ openings_from_gmi = None
 
 # AGD
 from datetime import datetime, timezone, timedelta
-# Cutoff time: 8:40 PM ET (EDT = UTC-4)
+# Cutoff time: 10:40 PM ET (EDT = UTC-4)
 def is_past_challenge_cutoff():
     et_now = datetime.now(timezone(timedelta(hours=-4)))  # EDT
-    cutoff = et_now.replace(hour=20, minute=40, second=0, microsecond=0)
+    cutoff = et_now.replace(hour=22, minute=40, second=0, microsecond=0)
     return et_now >= cutoff
 
 
