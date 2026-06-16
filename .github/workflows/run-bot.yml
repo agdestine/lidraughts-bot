@@ -26,6 +26,6 @@ jobs:
     - name: Setup and run bot for 1 hour
       run: |
         chmod +x ./scan_linux
-        timeout 36000 python3 lidraughts-bot.py || true      
+        timeout 3600 python3 lidraughts-bot.py || true      
       env:
         LIDRAUGHTS_BOT_TOKEN: ${{ secrets.LIDRAUGHTS_BOT_TOKEN }}
