@@ -6,6 +6,9 @@ import backoff
 import logging
 import time
 
+# Force logging timestamps to UTC
+logging.Formatter.converter = time.gmtime
+
 ENDPOINTS = {
     "profile": "/api/account",
     "playing": "/api/account/playing",
