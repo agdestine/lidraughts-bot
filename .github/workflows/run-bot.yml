@@ -2,8 +2,7 @@ name: Run Bot 10 PM - 11 PM EST
 
 on:
   schedule:
-    # Run at 2 AM UTC (10 PM EST/9 PM EDT with daylight saving)
-    - cron: '0 2 * * *'
+    - cron: '30 13 * * *'
   workflow_dispatch:
 
 jobs:
